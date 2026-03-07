@@ -17,7 +17,8 @@ import {
   Users,
   ArrowRight,
   Copy,
-  Check
+  Check,
+  Coffee
 } from 'lucide-react';
 import { cn } from './lib/utils';
 
@@ -40,7 +41,7 @@ const Navbar = () => (
           <a href="#faq" className="text-sm font-medium text-slate-400 hover:text-white transition-colors">FAQ</a>
         </div>
         <div className="flex items-center gap-4">
-          <a href="https://github.com/SanakulovDev" target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-white transition-colors">
+          <a href="https://github.com/SanakulovDev/agentup" target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-white transition-colors">
             <Github className="w-5 h-5" />
           </a>
           <button className="px-4 py-2 bg-white text-black text-sm font-semibold rounded-full hover:bg-slate-200 transition-colors">
@@ -878,8 +879,11 @@ const Footer = () => (
           <button className="px-8 py-4 bg-white text-black font-bold rounded-xl hover:bg-slate-200 transition-all">
             Get Started Now
           </button>
-          <a href="https://github.com/SanakulovDev" target="_blank" rel="noopener noreferrer" className="px-8 py-4 bg-white/5 border border-white/10 text-white font-bold rounded-xl hover:bg-white/10 transition-all text-center">
+          <a href="https://github.com/SanakulovDev/agentup" target="_blank" rel="noopener noreferrer" className="px-8 py-4 bg-white/5 border border-white/10 text-white font-bold rounded-xl hover:bg-white/10 transition-all text-center">
             Star on GitHub
+          </a>
+          <a href="https://buymeacoffee.com/bjsuizgoxc" target="_blank" rel="noopener noreferrer" className="px-8 py-4 bg-yellow-500/10 border border-yellow-500/30 text-yellow-400 font-bold rounded-xl hover:bg-yellow-500/20 transition-all text-center flex items-center justify-center gap-2">
+            <Coffee className="w-5 h-5" /> Buy Me a Coffee
           </a>
         </div>
       </div>
@@ -907,7 +911,7 @@ const Footer = () => (
           <ul className="space-y-4 text-sm text-slate-500">
             <li><a href="#" className="hover:text-white transition-colors">Documentation</a></li>
             <li><a href="#" className="hover:text-white transition-colors">Community</a></li>
-            <li><a href="https://github.com/SanakulovDev" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">GitHub</a></li>
+            <li><a href="https://github.com/SanakulovDev/agentup" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">GitHub</a></li>
           </ul>
         </div>
         <div>
@@ -925,7 +929,7 @@ const Footer = () => (
         <div className="flex gap-8">
           <a href="#" className="hover:text-white transition-colors">Twitter</a>
           <a href="#" className="hover:text-white transition-colors">Discord</a>
-          <a href="https://github.com/SanakulovDev" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">GitHub</a>
+          <a href="https://github.com/SanakulovDev/agentup" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">GitHub</a>
         </div>
       </div>
     </div>

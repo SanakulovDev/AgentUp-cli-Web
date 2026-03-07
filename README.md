@@ -35,8 +35,8 @@ A CLI that scaffolds AI coding agent configuration files (`CLAUDE.md`, `AGENTS.m
 
 ```bash
 # Clone the repository
-git clone https://github.com/SanakulovDev/AgentUp-cli-Web.git
-cd AgentUp-cli-Web
+git clone https://github.com/SanakulovDev/agentup.git
+cd agentup
 
 # Install dependencies
 npm install
@@ -86,6 +86,14 @@ cp .env.example .env.local
 | Variable         | Description                     |
 | ---------------- | ------------------------------- |
 | `GEMINI_API_KEY` | Gemini API key (optional for landing page) |
+
+## Support
+
+If you find this project useful, consider supporting its development:
+
+<a href="https://buymeacoffee.com/bjsuizgoxc" target="_blank">
+  <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" height="50">
+</a>
 
 ## License
 
