@@ -1,5 +1,5 @@
 {
-  "name": "AgentUp",
-  "description": "Automated AI agent context generation for modern developer workflows.",
+  "name": "Agent Up",
+  "description": "CLI tool that automatically scaffolds AI coding agent configuration for modern development workflows.",
   "requestFramePermissions": []
 }
