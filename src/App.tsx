@@ -14,7 +14,10 @@ const LazyBelowFold = lazy(() => import('./BelowFold').then(m => ({
     <>
       <m.InteractivePreview />
       <m.Features />
+      <m.WhatGetsGenerated />
+      <m.SupportedTools />
       <m.HowItWorks />
+      <m.UseCases />
       <m.FAQ />
       <m.Footer />
     </>

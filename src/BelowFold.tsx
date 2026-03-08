@@ -14,7 +14,13 @@ import {
   Users,
   Zap,
   Coffee,
-  Github
+  Github,
+  Sparkles,
+  Code,
+  Globe,
+  Cpu,
+  Shield,
+  Rocket
 } from 'lucide-react';
 import { cn } from './lib/utils';
 
@@ -692,6 +698,38 @@ export const FAQ = () => {
     {
       q: "Is it free to use?",
       a: "Agent Up is an open-source CLI tool. You can use it for free in any project."
+    },
+    {
+      q: "How do I create a CLAUDE.md file for my project?",
+      a: "Run npx agentup-cli@latest init in your project root. Agent Up will analyze your tech stack and automatically generate a comprehensive CLAUDE.md file with project context, coding conventions, available commands, and architecture guidelines tailored to your codebase."
+    },
+    {
+      q: "What is the difference between CLAUDE.md and AGENTS.md?",
+      a: "CLAUDE.md is specifically designed for Claude Code (Anthropic's CLI agent) and contains project-specific instructions. AGENTS.md is a universal AI agent context file that works across multiple providers — it defines team roles, tech stack details, and development conventions that any AI coding assistant can reference."
+    },
+    {
+      q: "How do I set up .cursorrules for Cursor IDE?",
+      a: "Agent Up generates both the legacy .cursorrules file and the newer .cursor/rules/*.mdc format automatically. Just run agentup-cli init, select Cursor as your IDE, and it will create glob-scoped rule files with your project's coding standards, framework conventions, and preferred patterns."
+    },
+    {
+      q: "Does Agent Up work with Next.js, React, Vue, or Angular?",
+      a: "Yes, Agent Up automatically detects your frontend framework from package.json and generates framework-specific rules. For Next.js it includes App Router conventions, for React it adds component patterns, and for Vue/Angular it includes their respective best practices in all generated files."
+    },
+    {
+      q: "Can I use Agent Up with GitHub Copilot or Codeium?",
+      a: "While Agent Up primarily generates files for Claude Code and Cursor, the AGENTS.md and CLAUDE.md files provide universal project context that any AI coding assistant — including GitHub Copilot, Codeium, Windsurf, and others — can use to understand your project better."
+    },
+    {
+      q: "How do I configure AI agent roles in Agent Up?",
+      a: "During the interactive setup, you can select predefined roles like Architect, Frontend, Backend, DevOps, and Fullstack. Each role gets specific instructions in the generated files, defining responsibilities, code review focus areas, and technology-specific guidelines."
+    },
+    {
+      q: "Does Agent Up support Python, Go, or Rust projects?",
+      a: "Yes, Agent Up is language-agnostic. It detects your project's primary language and generates appropriate context files with language-specific linting rules, type checking configuration, package management commands, and framework conventions for Python (Django, FastAPI), Go, Rust, and more."
+    },
+    {
+      q: "How do I update generated files when my project changes?",
+      a: "Simply run agentup-cli init again. Agent Up reads your .agentup.json configuration and regenerates all context files based on your current project state. You can also manually edit the generated files — Agent Up won't overwrite your customizations unless you explicitly regenerate."
     }
   ];
 
@@ -723,6 +761,221 @@ export const FAQ = () => {
                   </motion.div>
                 )}
               </AnimatePresence>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
+
+export const WhatGetsGenerated = () => {
+  const files = [
+    {
+      name: 'CLAUDE.md',
+      icon: Sparkles,
+      color: 'text-orange-400',
+      bg: 'from-orange-500/20 to-orange-500/5',
+      desc: 'The CLAUDE.md file provides project context, coding conventions, and architecture guidelines to Claude Code. It tells Claude about your tech stack, directory structure, available commands, and code style preferences so every response is project-aware.'
+    },
+    {
+      name: 'AGENTS.md',
+      icon: Users,
+      color: 'text-blue-400',
+      bg: 'from-blue-500/20 to-blue-500/5',
+      desc: 'AGENTS.md defines role-based AI agent instructions. It specifies agent responsibilities (frontend, backend, DevOps, architect), team conventions, and project-specific guidelines that any AI coding assistant can reference.'
+    },
+    {
+      name: '.cursorrules',
+      icon: Code,
+      color: 'text-cyan-400',
+      bg: 'from-cyan-500/20 to-cyan-500/5',
+      desc: 'The .cursorrules file configures Cursor IDE AI behavior. It sets coding standards, preferred patterns, framework-specific conventions, and project rules that Cursor uses to generate contextually accurate code suggestions.'
+    },
+    {
+      name: '.cursor/rules/*.mdc',
+      icon: FileCode,
+      color: 'text-violet-400',
+      bg: 'from-violet-500/20 to-violet-500/5',
+      desc: 'Cursor rule files (.mdc format) provide granular, glob-scoped instructions. Each rule targets specific file patterns and contains project-specific coding standards, making AI suggestions precise for different parts of your codebase.'
+    },
+    {
+      name: '.claude/rules/*.md',
+      icon: Shield,
+      color: 'text-emerald-400',
+      bg: 'from-emerald-500/20 to-emerald-500/5',
+      desc: 'Claude Code rule files define verification steps, code review checklists, and automated guidelines. They ensure Claude follows your team\'s quality standards, testing requirements, and deployment procedures.'
+    },
+    {
+      name: '.agentup.json',
+      icon: Cpu,
+      color: 'text-pink-400',
+      bg: 'from-pink-500/20 to-pink-500/5',
+      desc: 'The Agent Up configuration file stores your project metadata, stack details, AI provider preferences, and agent role definitions. Run agentup-cli again to regenerate all context files from this single source of truth.'
+    }
+  ];
+
+  return (
+    <section className="py-24 border-t border-white/5">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-16">
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">What Agent Up generates for you</h2>
+          <p className="text-slate-400 max-w-2xl mx-auto">One command creates all the AI agent configuration files your project needs. Every file is tailored to your tech stack, IDE, and team preferences.</p>
+        </div>
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {files.map((f, i) => (
+            <div key={i} className={cn("p-6 rounded-2xl border border-white/10 bg-gradient-to-br", f.bg)}>
+              <div className="flex items-center gap-3 mb-4">
+                <f.icon className={cn("w-6 h-6", f.color)} />
+                <h3 className="text-lg font-bold text-white font-mono">{f.name}</h3>
+              </div>
+              <p className="text-sm text-slate-400 leading-relaxed">{f.desc}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
+
+export const SupportedTools = () => {
+  const categories = [
+    {
+      title: 'AI Coding Agents',
+      icon: Sparkles,
+      tools: [
+        { name: 'Claude Code', desc: 'Anthropic\'s CLI agent for autonomous coding with CLAUDE.md and .claude/rules support' },
+        { name: 'Cursor AI', desc: 'AI-first code editor with .cursorrules and .cursor/rules integration' },
+        { name: 'OpenAI Codex', desc: 'OpenAI\'s code generation agent with AGENTS.md context support' },
+        { name: 'Google Gemini', desc: 'Google\'s AI model with multi-modal code understanding capabilities' },
+        { name: 'GitHub Copilot', desc: 'AI pair programmer that benefits from structured project context files' },
+        { name: 'Codeium / Windsurf', desc: 'Free AI code completion engine with rules file support' }
+      ]
+    },
+    {
+      title: 'IDEs & Editors',
+      icon: Monitor,
+      tools: [
+        { name: 'Cursor', desc: 'AI-native code editor with built-in .cursorrules and .mdc rule support' },
+        { name: 'VS Code', desc: 'Microsoft\'s editor with .vscode/settings.json and extensions configuration' },
+        { name: 'JetBrains (PhpStorm, WebStorm, IntelliJ)', desc: 'Full .idea workspace and project configuration generation' },
+        { name: 'Zed', desc: 'High-performance editor with .zed/settings.json AI configuration' },
+        { name: 'Neovim', desc: 'Terminal-based editor with project-level configuration support' }
+      ]
+    },
+    {
+      title: 'Frameworks & Languages',
+      icon: Globe,
+      tools: [
+        { name: 'Next.js / React / Vue / Angular / Svelte', desc: 'Frontend framework detection with component and routing conventions' },
+        { name: 'Node.js / Express / Fastify / NestJS', desc: 'Backend framework rules including API patterns and middleware setup' },
+        { name: 'TypeScript / JavaScript / Python / Go / Rust', desc: 'Language-specific type checking, linting, and code style rules' },
+        { name: 'Django / Flask / FastAPI / Laravel / Rails', desc: 'Full-stack framework conventions with ORM and migration patterns' },
+        { name: 'Tailwind CSS / CSS Modules / Styled Components', desc: 'Styling framework preferences and design system conventions' }
+      ]
+    },
+    {
+      title: 'DevOps & Databases',
+      icon: Database,
+      tools: [
+        { name: 'Docker / Docker Compose', desc: 'Container configuration with Dockerfile and compose service context' },
+        { name: 'PostgreSQL / MySQL / MongoDB / SQLite', desc: 'Database-specific schema, migration, and query optimization rules' },
+        { name: 'Prisma / Drizzle / TypeORM / Sequelize', desc: 'ORM configuration with model generation and migration conventions' },
+        { name: 'GitHub Actions / GitLab CI / Jenkins', desc: 'CI/CD pipeline context for AI-assisted workflow automation' },
+        { name: 'Vercel / Netlify / AWS / Firebase', desc: 'Deployment platform conventions and environment configuration' }
+      ]
+    }
+  ];
+
+  return (
+    <section className="py-24 bg-slate-900/30">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-16">
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Works with your entire stack</h2>
+          <p className="text-slate-400 max-w-2xl mx-auto">Agent Up detects your project's technology stack and generates optimized AI context files for every tool you use — from IDE to deployment platform.</p>
+        </div>
+        <div className="grid md:grid-cols-2 gap-8">
+          {categories.map((cat, i) => (
+            <div key={i} className="p-6 rounded-2xl border border-white/10 bg-white/5">
+              <div className="flex items-center gap-3 mb-6">
+                <cat.icon className="w-6 h-6 text-cyan-400" />
+                <h3 className="text-xl font-bold text-white">{cat.title}</h3>
+              </div>
+              <ul className="space-y-4">
+                {cat.tools.map((tool, j) => (
+                  <li key={j} className="flex items-start gap-3">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-400 mt-0.5 shrink-0" />
+                    <div>
+                      <span className="text-sm font-medium text-white">{tool.name}</span>
+                      <p className="text-xs text-slate-400 mt-0.5">{tool.desc}</p>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
+
+export const UseCases = () => {
+  const cases = [
+    {
+      icon: Rocket,
+      title: 'New project setup',
+      desc: 'Starting a new project? Run agentup-cli init to instantly scaffold CLAUDE.md, AGENTS.md, and IDE-specific rules. Skip the manual file creation and get AI agents productive from the first commit.',
+      code: 'npx agentup-cli@latest init'
+    },
+    {
+      icon: Users,
+      title: 'Team onboarding',
+      desc: 'Ensure every developer on your team works with the same AI context. Agent Up generates standardized configuration files that keep Claude Code, Cursor, and Codex aligned with your project conventions.',
+      code: 'git add CLAUDE.md AGENTS.md .cursor/'
+    },
+    {
+      icon: Code,
+      title: 'Multi-agent workflows',
+      desc: 'Define specialized AI agent roles — architect, frontend, backend, DevOps — each with their own context and rules. Agent Up creates role-specific instructions so each agent focuses on what it does best.',
+      code: 'roles: [Architect, Frontend, Backend]'
+    },
+    {
+      icon: Globe,
+      title: 'Open source projects',
+      desc: 'Make your open source project AI-contributor friendly. Generated CLAUDE.md and AGENTS.md files help AI coding agents understand your codebase structure, contribution guidelines, and coding standards instantly.',
+      code: 'cat CLAUDE.md  # Full project context'
+    },
+    {
+      icon: Cpu,
+      title: 'Monorepo configuration',
+      desc: 'Working with a monorepo? Agent Up detects multiple packages and generates separate context rules for each workspace, ensuring AI agents understand package boundaries and shared dependencies.',
+      code: 'agentup-cli init --workspace packages/*'
+    },
+    {
+      icon: Shield,
+      title: 'CI/CD integration',
+      desc: 'Integrate Agent Up into your CI pipeline to keep AI context files up-to-date. Automatically regenerate CLAUDE.md and .cursorrules when your package.json, tsconfig, or Docker configuration changes.',
+      code: 'agentup-cli generate --ci'
+    }
+  ];
+
+  return (
+    <section className="py-24 border-t border-white/5">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-16">
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Built for every developer workflow</h2>
+          <p className="text-slate-400 max-w-2xl mx-auto">Whether you're a solo developer or part of a large team, Agent Up adapts to how you work with AI coding agents.</p>
+        </div>
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {cases.map((c, i) => (
+            <div key={i} className="p-6 rounded-2xl border border-white/10 bg-white/5 hover:bg-white/[0.08] transition-all group">
+              <c.icon className="w-8 h-8 text-cyan-400 mb-4 transition-transform group-hover:scale-110" />
+              <h3 className="text-lg font-bold text-white mb-3">{c.title}</h3>
+              <p className="text-sm text-slate-400 leading-relaxed mb-4">{c.desc}</p>
+              <div className="p-2.5 bg-black/40 rounded-lg border border-white/10 font-mono text-xs text-emerald-400">
+                $ {c.code}
+              </div>
             </div>
           ))}
         </div>

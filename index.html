@@ -5,25 +5,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <!-- Primary Meta -->
-    <title>Agent Up — Automated AI Agent Context Generation CLI</title>
-    <meta name="description" content="Agent Up is a CLI tool that automatically scaffolds AI coding agent configuration files (CLAUDE.md, AGENTS.md, .cursorrules) for modern development workflows. Stop manually maintaining context files." />
-    <meta name="keywords" content="agentup, agent up, CLI, AI agent, CLAUDE.md, AGENTS.md, cursorrules, AI context, developer tools, scaffolding, coding agent, configuration generator" />
+    <title>Agent Up — AI Agent Context Generator CLI | CLAUDE.md, AGENTS.md, .cursorrules</title>
+    <meta name="description" content="Agent Up is a free open-source CLI tool that automatically generates AI coding agent configuration files (CLAUDE.md, AGENTS.md, .cursorrules, .claude/rules) for Claude Code, Cursor, Codex, and Gemini. One command to scaffold your entire AI workflow." />
+    <meta name="keywords" content="agentup, agent up, agentup-cli, CLI tool, AI agent configuration, CLAUDE.md generator, AGENTS.md generator, cursorrules, cursor rules, claude code rules, AI context files, developer tools, scaffolding, coding agent, configuration generator, npx agentup-cli, AI workflow automation, open source CLI" />
     <meta name="author" content="SanakulovDev" />
-    <meta name="robots" content="index, follow" />
-    <link rel="canonical" href="https://agentup.uz" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
+    <link rel="canonical" href="https://agentup.uz/" />
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://agentup.uz" />
-    <meta property="og:title" content="Agent Up — Automated AI Agent Context Generation CLI" />
-    <meta property="og:description" content="A CLI tool that scaffolds AI coding agent configuration for modern development workflows. Generate CLAUDE.md, AGENTS.md, .cursorrules and more automatically." />
+    <meta property="og:url" content="https://agentup.uz/" />
+    <meta property="og:title" content="Agent Up — AI Agent Context Generator CLI" />
+    <meta property="og:description" content="Free open-source CLI that auto-generates CLAUDE.md, AGENTS.md, .cursorrules and more. One command to scaffold AI agent configuration for Claude Code, Cursor, Codex, and Gemini." />
     <meta property="og:site_name" content="Agent Up" />
+    <meta property="og:image" content="https://agentup.uz/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Agent Up — AI Agent Context Generator CLI" />
+    <meta property="og:locale" content="en_US" />
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:url" content="https://agentup.uz" />
-    <meta name="twitter:title" content="Agent Up — Automated AI Agent Context Generation CLI" />
-    <meta name="twitter:description" content="A CLI tool that scaffolds AI coding agent configuration for modern development workflows. Generate CLAUDE.md, AGENTS.md, .cursorrules and more automatically." />
+    <meta name="twitter:url" content="https://agentup.uz/" />
+    <meta name="twitter:title" content="Agent Up — AI Agent Context Generator CLI" />
+    <meta name="twitter:description" content="Free open-source CLI that auto-generates CLAUDE.md, AGENTS.md, .cursorrules and more. One command to scaffold AI agent configuration for your project." />
+    <meta name="twitter:image" content="https://agentup.uz/og-image.png" />
+    <meta name="twitter:image:alt" content="Agent Up CLI — Generate AI agent context automatically" />
 
     <!-- Theme -->
     <meta name="theme-color" content="#030712" />
@@ -43,13 +50,14 @@
       #root{min-height:100vh}
     </style>
 
-    <!-- Structured Data (JSON-LD) for SEO -->
+    <!-- Structured Data: SoftwareApplication -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "SoftwareApplication",
       "name": "Agent Up",
-      "description": "A CLI tool that automatically scaffolds AI coding agent configuration files for modern development workflows.",
+      "alternateName": "agentup-cli",
+      "description": "A free open-source CLI tool that automatically scaffolds AI coding agent configuration files (CLAUDE.md, AGENTS.md, .cursorrules) for modern development workflows.",
       "url": "https://agentup.uz",
       "applicationCategory": "DeveloperApplication",
       "operatingSystem": "Windows, macOS, Linux",
@@ -64,12 +72,141 @@
         "url": "https://github.com/SanakulovDev"
       },
       "softwareVersion": "0.1.0",
-      "downloadUrl": "https://www.npmjs.com/package/agentup-cli"
+      "downloadUrl": "https://www.npmjs.com/package/agentup-cli",
+      "installUrl": "https://www.npmjs.com/package/agentup-cli",
+      "screenshot": "https://agentup.uz/og-image.png",
+      "featureList": "Multi-provider support, IDE-aware scaffolding, Docker-aware config, Database context, Role-based setup",
+      "softwareHelp": {
+        "@type": "CreativeWork",
+        "url": "https://github.com/SanakulovDev/agentup"
+      }
+    }
+    </script>
+
+    <!-- Structured Data: FAQ (enables rich snippets in Google) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Do I need to run npm install every time?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No, you only need to run Agent Up once to scaffold the files. You can run it again if your project configuration changes significantly."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does Agent Up support Cursor and Claude?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes! It generates specific rules for both. For Cursor, it creates .cursor/rules (.mdc files), and for Claude, it creates .claude/rules (.md files)."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I use Agent Up in existing projects?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Absolutely. Agent Up will detect your existing stack and generate the appropriate context files without overwriting your source code."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does Agent Up support Docker-based projects?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes, it includes a specific toggle for Docker. If enabled, it adds container-specific instructions so AI agents understand your dev environment."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is Agent Up free to use?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Agent Up is an open-source CLI tool. You can use it for free in any project."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How do I create a CLAUDE.md file for my project?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Run npx agentup-cli@latest init in your project root. Agent Up will analyze your tech stack and automatically generate a comprehensive CLAUDE.md file with project context, coding conventions, available commands, and architecture guidelines tailored to your codebase."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is the difference between CLAUDE.md and AGENTS.md?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "CLAUDE.md is specifically designed for Claude Code (Anthropic's CLI agent) and contains project-specific instructions. AGENTS.md is a universal AI agent context file that works across multiple providers — it defines team roles, tech stack details, and development conventions that any AI coding assistant can reference."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How do I set up .cursorrules for Cursor IDE?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Agent Up generates both the legacy .cursorrules file and the newer .cursor/rules/*.mdc format automatically. Just run agentup-cli init, select Cursor as your IDE, and it will create glob-scoped rule files with your project's coding standards."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does Agent Up work with Next.js, React, Vue, or Angular?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes, Agent Up automatically detects your frontend framework from package.json and generates framework-specific rules. For Next.js it includes App Router conventions, for React it adds component patterns, and for Vue/Angular it includes their respective best practices."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does Agent Up support Python, Go, or Rust projects?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes, Agent Up is language-agnostic. It detects your project's primary language and generates appropriate context files with language-specific linting rules, type checking configuration, package management commands, and framework conventions."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How do I update generated files when my project changes?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Simply run agentup-cli init again. Agent Up reads your .agentup.json configuration and regenerates all context files based on your current project state."
+          }
+        }
+      ]
+    }
+    </script>
+
+    <!-- Structured Data: WebSite (enables sitelinks search box) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Agent Up",
+      "url": "https://agentup.uz",
+      "description": "AI Agent Context Generator CLI for modern development workflows",
+      "publisher": {
+        "@type": "Person",
+        "name": "SanakulovDev",
+        "url": "https://github.com/SanakulovDev"
+      }
     }
     </script>
   </head>
   <body>
     <div id="root"></div>
+    <noscript>
+      <div style="padding:2rem;text-align:center;color:#cbd5e1;background:#030712;min-height:100vh;">
+        <h1>Agent Up — AI Agent Context Generator CLI</h1>
+        <p>A free open-source CLI tool that automatically generates AI coding agent configuration files (CLAUDE.md, AGENTS.md, .cursorrules) for modern development workflows.</p>
+        <p>Get started: <code>npx agentup-cli@latest init</code></p>
+        <p><a href="https://www.npmjs.com/package/agentup-cli" style="color:#22d3ee;">Install from npm</a> | <a href="https://github.com/SanakulovDev/agentup" style="color:#22d3ee;">View on GitHub</a></p>
+      </div>
+    </noscript>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
