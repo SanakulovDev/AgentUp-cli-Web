@@ -35,6 +35,38 @@
     <!-- Preconnect to fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+
+    <!-- Critical inline CSS to prevent FOUC and speed up LCP -->
+    <style>
+      body{margin:0;background:#030712;color:#cbd5e1;-webkit-font-smoothing:antialiased}
+      #root{min-height:100vh}
+    </style>
+
+    <!-- Structured Data (JSON-LD) for SEO -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Agent Up",
+      "description": "A CLI tool that automatically scaffolds AI coding agent configuration files for modern development workflows.",
+      "url": "https://agentup.uz",
+      "applicationCategory": "DeveloperApplication",
+      "operatingSystem": "Windows, macOS, Linux",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "author": {
+        "@type": "Person",
+        "name": "SanakulovDev",
+        "url": "https://github.com/SanakulovDev"
+      },
+      "softwareVersion": "0.1.0",
+      "downloadUrl": "https://www.npmjs.com/package/agentup-cli"
+    }
+    </script>
   </head>
   <body>
     <div id="root"></div>

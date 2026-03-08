@@ -1,16 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { 
-  Terminal, 
-  Zap, 
-  Layout, 
-  Database, 
-  Box, 
-  CheckCircle2, 
-  ChevronRight, 
-  ChevronDown, 
-  FileCode, 
-  Folder, 
+import {
+  Zap,
+  Layout,
+  Database,
+  Box,
+  CheckCircle2,
+  ChevronRight,
+  ChevronDown,
+  FileCode,
+  Folder,
   Github,
   Monitor,
   Layers,
