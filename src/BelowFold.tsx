@@ -296,8 +296,9 @@ Database: ${config.database} v${config.dbVersion}${config.docker ? '\nDocker: en
 
             <div className="space-y-5">
               <div>
-                <label className="block text-xs font-medium text-slate-500 mb-2">PROJECT NAME</label>
+                <label htmlFor="cfg-name" className="block text-xs font-medium text-slate-400 mb-2">PROJECT NAME</label>
                 <input
+                  id="cfg-name"
                   type="text"
                   value={config.projectName}
                   onChange={(e) => setConfig({...config, projectName: e.target.value})}
@@ -305,8 +306,9 @@ Database: ${config.database} v${config.dbVersion}${config.docker ? '\nDocker: en
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-slate-500 mb-2">DESCRIPTION</label>
+                <label htmlFor="cfg-desc" className="block text-xs font-medium text-slate-400 mb-2">DESCRIPTION</label>
                 <textarea
+                  id="cfg-desc"
                   value={config.description}
                   onChange={(e) => setConfig({...config, description: e.target.value})}
                   rows={2}
@@ -314,8 +316,9 @@ Database: ${config.database} v${config.dbVersion}${config.docker ? '\nDocker: en
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-slate-500 mb-2">PRIMARY IDE</label>
+                <label htmlFor="cfg-ide" className="block text-xs font-medium text-slate-400 mb-2">PRIMARY IDE</label>
                 <select
+                  id="cfg-ide"
                   value={config.ide}
                   onChange={(e) => setConfig({...config, ide: e.target.value})}
                   className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white focus:outline-none focus:border-cyan-500 transition-colors"
@@ -328,8 +331,9 @@ Database: ${config.database} v${config.dbVersion}${config.docker ? '\nDocker: en
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-medium text-slate-500 mb-2">LANGUAGE</label>
+                  <label htmlFor="cfg-lang" className="block text-xs font-medium text-slate-400 mb-2">LANGUAGE</label>
                   <input
+                    id="cfg-lang"
                     type="text"
                     value={config.language}
                     onChange={(e) => setConfig({...config, language: e.target.value})}
@@ -337,8 +341,9 @@ Database: ${config.database} v${config.dbVersion}${config.docker ? '\nDocker: en
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-slate-500 mb-2">VERSION</label>
+                  <label htmlFor="cfg-ver" className="block text-xs font-medium text-slate-400 mb-2">VERSION</label>
                   <input
+                    id="cfg-ver"
                     type="text"
                     value={config.version}
                     onChange={(e) => setConfig({...config, version: e.target.value})}
@@ -348,8 +353,9 @@ Database: ${config.database} v${config.dbVersion}${config.docker ? '\nDocker: en
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-medium text-slate-500 mb-2">FRAMEWORK</label>
+                  <label htmlFor="cfg-fw" className="block text-xs font-medium text-slate-400 mb-2">FRAMEWORK</label>
                   <input
+                    id="cfg-fw"
                     type="text"
                     value={config.framework}
                     onChange={(e) => setConfig({...config, framework: e.target.value})}
@@ -357,8 +363,9 @@ Database: ${config.database} v${config.dbVersion}${config.docker ? '\nDocker: en
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-slate-500 mb-2">DATABASE</label>
+                  <label htmlFor="cfg-db" className="block text-xs font-medium text-slate-400 mb-2">DATABASE</label>
                   <select
+                    id="cfg-db"
                     value={config.database}
                     onChange={(e) => setConfig({...config, database: e.target.value})}
                     className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white focus:outline-none focus:border-cyan-500 transition-colors"
@@ -374,9 +381,12 @@ Database: ${config.database} v${config.dbVersion}${config.docker ? '\nDocker: en
               <div className="flex items-center justify-between p-3.5 bg-white/5 rounded-xl border border-white/10">
                 <div className="flex items-center gap-3">
                   <Box className="w-5 h-5 text-emerald-400" />
-                  <span className="text-sm font-medium text-white">Docker</span>
+                  <span id="docker-label" className="text-sm font-medium text-white">Docker</span>
                 </div>
                 <button
+                  role="switch"
+                  aria-checked={config.docker}
+                  aria-labelledby="docker-label"
                   onClick={() => setConfig({...config, docker: !config.docker})}
                   className={cn(
                     "w-10 h-5 rounded-full transition-colors relative",
@@ -390,45 +400,47 @@ Database: ${config.database} v${config.dbVersion}${config.docker ? '\nDocker: en
                 </button>
               </div>
 
-              <div>
-                <label className="block text-xs font-medium text-slate-500 mb-2">AI PROVIDERS</label>
-                <div className="flex flex-wrap gap-2">
+              <fieldset>
+                <legend className="block text-xs font-medium text-slate-400 mb-2">AI PROVIDERS</legend>
+                <div className="flex flex-wrap gap-2" role="group" aria-label="AI provider selection">
                   {allProviders.map(p => (
                     <button
                       key={p}
+                      aria-pressed={config.providers.includes(p)}
                       onClick={() => toggleProvider(p)}
                       className={cn(
                         "px-3 py-1.5 rounded-lg text-xs font-medium border transition-all",
                         config.providers.includes(p)
                           ? "bg-cyan-500/20 border-cyan-500/50 text-cyan-300"
-                          : "bg-white/5 border-white/10 text-slate-500 hover:text-slate-300"
+                          : "bg-white/5 border-white/10 text-slate-400 hover:text-slate-300"
                       )}
                     >
                       {p}
                     </button>
                   ))}
                 </div>
-              </div>
+              </fieldset>
 
-              <div>
-                <label className="block text-xs font-medium text-slate-500 mb-2">AGENT ROLES</label>
-                <div className="flex flex-wrap gap-2">
+              <fieldset>
+                <legend className="block text-xs font-medium text-slate-400 mb-2">AGENT ROLES</legend>
+                <div className="flex flex-wrap gap-2" role="group" aria-label="Agent role selection">
                   {allRoles.map(r => (
                     <button
                       key={r}
+                      aria-pressed={config.roles.includes(r)}
                       onClick={() => toggleRole(r)}
                       className={cn(
                         "px-3 py-1.5 rounded-lg text-xs font-medium border transition-all",
                         config.roles.includes(r)
                           ? "bg-emerald-500/20 border-emerald-500/50 text-emerald-300"
-                          : "bg-white/5 border-white/10 text-slate-500 hover:text-slate-300"
+                          : "bg-white/5 border-white/10 text-slate-400 hover:text-slate-300"
                       )}
                     >
                       {r}
                     </button>
                   ))}
                 </div>
-              </div>
+              </fieldset>
             </div>
           </div>
 
@@ -441,7 +453,7 @@ Database: ${config.database} v${config.dbVersion}${config.docker ? '\nDocker: en
                   <div className="w-3 h-3 rounded-full bg-yellow-500/50" />
                   <div className="w-3 h-3 rounded-full bg-green-500/50" />
                 </div>
-                <span className="ml-4 text-xs font-mono text-slate-500">agent-up ~ {selectedFile}</span>
+                <span className="ml-4 text-xs font-mono text-slate-400">agent-up ~ {selectedFile}</span>
               </div>
               <div className="flex items-center gap-2">
                 <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">LIVE</span>
@@ -451,7 +463,7 @@ Database: ${config.database} v${config.dbVersion}${config.docker ? '\nDocker: en
             <div className="flex-1 flex overflow-hidden">
               {/* File Tree Sidebar */}
               <div className="w-56 border-r border-white/10 bg-black/20 p-3 overflow-y-auto shrink-0">
-                <p className="text-[10px] font-semibold text-slate-600 uppercase tracking-widest mb-3 px-2">Explorer</p>
+                <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-widest mb-3 px-2">Explorer</p>
                 <div className="space-y-0.5">
                   {fileTree.map((item, i) => (
                     <div key={i}>
@@ -480,7 +492,7 @@ Database: ${config.database} v${config.dbVersion}${config.docker ? '\nDocker: en
                                       onClick={() => setSelectedFile(child.name)}
                                       className={cn(
                                         "w-full flex items-center gap-2 px-2 py-1.5 rounded-md text-sm transition-colors",
-                                        selectedFile === child.name ? "bg-cyan-500/10 text-cyan-300 border-l-2 border-cyan-400" : "text-slate-500 hover:text-slate-300 hover:bg-white/5"
+                                        selectedFile === child.name ? "bg-cyan-500/10 text-cyan-300 border-l-2 border-cyan-400" : "text-slate-400 hover:text-slate-300 hover:bg-white/5"
                                       )}
                                     >
                                       <FileCode className="w-3.5 h-3.5" /> <span className="truncate">{child.name}</span>
@@ -496,7 +508,7 @@ Database: ${config.database} v${config.dbVersion}${config.docker ? '\nDocker: en
                           onClick={() => setSelectedFile(item.name)}
                           className={cn(
                             "w-full flex items-center gap-2 px-2 py-1.5 rounded-md text-sm transition-colors",
-                            selectedFile === item.name ? "bg-cyan-500/10 text-cyan-300 border-l-2 border-cyan-400" : "text-slate-500 hover:text-slate-300 hover:bg-white/5"
+                            selectedFile === item.name ? "bg-cyan-500/10 text-cyan-300 border-l-2 border-cyan-400" : "text-slate-400 hover:text-slate-300 hover:bg-white/5"
                           )}
                         >
                           <FileCode className="w-3.5 h-3.5" /> {item.name}
@@ -510,7 +522,7 @@ Database: ${config.database} v${config.dbVersion}${config.docker ? '\nDocker: en
               {/* Code Preview */}
               <div className="flex-1 bg-black/40 overflow-y-auto">
                 <div className="flex items-center gap-2 px-6 py-2 border-b border-white/10 bg-white/[0.02]">
-                  <FileCode className="w-3.5 h-3.5 text-slate-500" />
+                  <FileCode className="w-3.5 h-3.5 text-slate-400" />
                   <span className="text-xs font-mono text-slate-400">{selectedFile}</span>
                 </div>
                 <div className="p-6 font-mono text-sm">
@@ -636,7 +648,7 @@ export const HowItWorks = () => {
         <div className="grid md:grid-cols-4 gap-8">
           {steps.map((s, i) => (
             <div key={i} className="relative">
-              <div className="text-6xl font-black text-white/5 absolute -top-8 -left-2 select-none">{s.step}</div>
+              <div className="text-6xl font-black text-white/10 absolute -top-8 -left-2 select-none">{s.step}</div>
               <div className="relative z-10">
                 <h3 className="text-xl font-bold text-white mb-3">{s.title}</h3>
                 <p className="text-slate-400 mb-6">{s.desc}</p>
@@ -695,7 +707,7 @@ export const FAQ = () => {
                 className="w-full px-6 py-5 text-left flex items-center justify-between hover:bg-white/5 transition-colors"
               >
                 <span className="font-medium text-white">{faq.q}</span>
-                <ChevronDown className={cn("w-5 h-5 text-slate-500 transition-transform", openIndex === i && "rotate-180")} />
+                <ChevronDown className={cn("w-5 h-5 text-slate-400 transition-transform", openIndex === i && "rotate-180")} />
               </button>
               <AnimatePresence>
                 {openIndex === i && (
@@ -746,29 +758,29 @@ export const Footer = () => (
             <Zap className="w-6 h-6 text-cyan-400 fill-cyan-400" />
             <span className="text-xl font-bold text-white">Agent Up</span>
           </div>
-          <p className="text-sm text-slate-500 leading-relaxed">
+          <p className="text-sm text-slate-400 leading-relaxed">
             Automating the bridge between your code and AI agents. Built for the next generation of developers.
           </p>
         </div>
         <div>
-          <h4 className="text-white font-bold mb-6">Product</h4>
-          <ul className="space-y-4 text-sm text-slate-500">
+          <h3 className="text-white font-bold mb-6">Product</h3>
+          <ul className="space-y-4 text-sm text-slate-400">
             <li><a href="#features" className="hover:text-white transition-colors">Features</a></li>
             <li><a href="https://www.npmjs.com/package/agentup-cli" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">CLI Reference</a></li>
             <li><a href="#demo" className="hover:text-white transition-colors">Integrations</a></li>
           </ul>
         </div>
         <div>
-          <h4 className="text-white font-bold mb-6">Resources</h4>
-          <ul className="space-y-4 text-sm text-slate-500">
+          <h3 className="text-white font-bold mb-6">Resources</h3>
+          <ul className="space-y-4 text-sm text-slate-400">
             <li><a href="https://github.com/SanakulovDev/agentup" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Documentation</a></li>
             <li><a href="https://github.com/SanakulovDev/agentup" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Community</a></li>
             <li><a href="https://github.com/SanakulovDev/agentup" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">GitHub</a></li>
           </ul>
         </div>
         <div>
-          <h4 className="text-white font-bold mb-6">Support</h4>
-          <ul className="space-y-4 text-sm text-slate-500">
+          <h3 className="text-white font-bold mb-6">Support</h3>
+          <ul className="space-y-4 text-sm text-slate-400">
             <li><a href="https://buymeacoffee.com/bjsuizgoxc" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Buy Me a Coffee</a></li>
             <li><a href="#faq" className="hover:text-white transition-colors">FAQ</a></li>
             <li><a href="https://github.com/SanakulovDev/agentup" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">GitHub</a></li>
@@ -776,7 +788,7 @@ export const Footer = () => (
         </div>
       </div>
 
-      <div className="mt-16 pt-8 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-slate-600">
+      <div className="mt-16 pt-8 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-slate-400">
         <p>&copy; 2026 Agent Up. All rights reserved.</p>
         <div className="flex gap-8">
           <a href="https://github.com/SanakulovDev/agentup" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">GitHub</a>

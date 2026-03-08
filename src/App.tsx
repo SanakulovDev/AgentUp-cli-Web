@@ -40,7 +40,7 @@ const Navbar = () => (
           <a href="#faq" className="text-sm font-medium text-slate-400 hover:text-white transition-colors">FAQ</a>
         </div>
         <div className="flex items-center gap-4">
-          <a href="https://github.com/SanakulovDev/agentup" target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-white transition-colors">
+          <a href="https://github.com/SanakulovDev/agentup" target="_blank" rel="noopener noreferrer" aria-label="GitHub repository" className="text-slate-400 hover:text-white transition-colors">
             <Github className="w-5 h-5" />
           </a>
           <a href="https://www.npmjs.com/package/agentup-cli" target="_blank" rel="noopener noreferrer" className="px-4 py-2 bg-white text-black text-sm font-semibold rounded-full hover:bg-slate-200 transition-colors">
@@ -103,6 +103,7 @@ const Hero = () => {
               </div>
               <button
                 onClick={copyToClipboard}
+                aria-label="Copy command to clipboard"
                 className="p-2 hover:bg-white/5 rounded-lg transition-colors"
               >
                 {copied ? <Check className="w-4 h-4 text-emerald-500" /> : <Copy className="w-4 h-4" />}
@@ -122,7 +123,7 @@ const ProblemSection = () => (
         <div>
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
             The manual context <br />
-            <span className="text-slate-500">maintenance nightmare.</span>
+            <span className="text-slate-400">maintenance nightmare.</span>
           </h2>
           <p className="text-lg text-slate-400 mb-8">
             Developers today spend hours manually writing and updating instruction files for different AI agents. It's repetitive, inconsistent, and easy to forget.
