@@ -44,9 +44,9 @@ const Navbar = () => (
           <a href="https://github.com/SanakulovDev/agentup" target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-white transition-colors">
             <Github className="w-5 h-5" />
           </a>
-          <button className="px-4 py-2 bg-white text-black text-sm font-semibold rounded-full hover:bg-slate-200 transition-colors">
+          <a href="https://www.npmjs.com/package/agentup-cli" target="_blank" rel="noopener noreferrer" className="px-4 py-2 bg-white text-black text-sm font-semibold rounded-full hover:bg-slate-200 transition-colors">
             Get Started
-          </button>
+          </a>
         </div>
       </div>
     </div>
@@ -91,12 +91,12 @@ const Hero = () => {
           </p>
           
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
-            <button className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-cyan-500 to-emerald-500 text-white font-bold rounded-xl hover:shadow-[0_0_20px_rgba(34,211,238,0.4)] transition-all flex items-center justify-center gap-2">
+            <a href="https://www.npmjs.com/package/agentup-cli" target="_blank" rel="noopener noreferrer" className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-cyan-500 to-emerald-500 text-white font-bold rounded-xl hover:shadow-[0_0_20px_rgba(34,211,238,0.4)] transition-all flex items-center justify-center gap-2">
               Get Started <ArrowRight className="w-5 h-5" />
-            </button>
-            <button className="w-full sm:w-auto px-8 py-4 bg-white/5 border border-white/10 text-white font-bold rounded-xl hover:bg-white/10 transition-all">
+            </a>
+            <a href="#demo" className="w-full sm:w-auto px-8 py-4 bg-white/5 border border-white/10 text-white font-bold rounded-xl hover:bg-white/10 transition-all text-center">
               View Demo
-            </button>
+            </a>
           </div>
 
           <div className="max-w-md mx-auto relative group">
@@ -876,9 +876,9 @@ const Footer = () => (
           <p className="text-slate-400">Join thousands of developers automating their agent context.</p>
         </div>
         <div className="flex flex-col sm:flex-row gap-4">
-          <button className="px-8 py-4 bg-white text-black font-bold rounded-xl hover:bg-slate-200 transition-all">
+          <a href="https://www.npmjs.com/package/agentup-cli" target="_blank" rel="noopener noreferrer" className="px-8 py-4 bg-white text-black font-bold rounded-xl hover:bg-slate-200 transition-all text-center">
             Get Started Now
-          </button>
+          </a>
           <a href="https://github.com/SanakulovDev/agentup" target="_blank" rel="noopener noreferrer" className="px-8 py-4 bg-white/5 border border-white/10 text-white font-bold rounded-xl hover:bg-white/10 transition-all text-center">
             Star on GitHub
           </a>
