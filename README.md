@@ -1,8 +1,8 @@
 <div align="center">
 
-# Agent Up — Web
+# Agent Up (AgentUp / agentupcli) — Web
 
-**Marketing & landing page for the Agent Up CLI tool.**
+**Marketing & landing page for the Agent Up CLI tool (also searched as AgentUp, agent up, and agentupcli).**
 
 A CLI that scaffolds AI coding agent configuration files (`CLAUDE.md`, `AGENTS.md`, `.cursorrules`, etc.) for modern development workflows.
 

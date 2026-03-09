@@ -680,6 +680,10 @@ export const FAQ = () => {
 
   const faqs = [
     {
+      q: "Is Agent Up the same as AgentUp, agent up, or agentupcli?",
+      a: "Yes. Agent Up, AgentUp, agent up, and agentupcli all refer to the same CLI package published as agentup-cli on npm."
+    },
+    {
       q: "Do I need to run npm install every time?",
       a: "No, you only need to run Agent Up once to scaffold the files. You can run it again if your project configuration changes significantly."
     },

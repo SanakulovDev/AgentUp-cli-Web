@@ -78,14 +78,14 @@ const Hero = () => {
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
             </span>
-            v0.1.0 is now live
+            v0.1.19 is now live
           </span>
           <h1 className="text-5xl md:text-7xl font-extrabold text-white tracking-tight mb-6">
             Generate AI agent context <br />
             <span className="text-gradient">automatically.</span>
           </h1>
           <p className="max-w-2xl mx-auto text-lg md:text-xl text-slate-400 mb-10 leading-relaxed">
-            Agent Up is a CLI tool that scaffolds AI coding agent configuration for modern development workflows. Stop manually maintaining context files.
+            Agent Up (also searched as AgentUp, agent up, or agentupcli) is a CLI tool that scaffolds AI coding agent configuration for modern development workflows. Stop manually maintaining context files.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">

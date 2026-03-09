@@ -1,5 +1,5 @@
 {
   "name": "Agent Up",
-  "description": "CLI tool that automatically scaffolds AI coding agent configuration for modern development workflows.",
+  "description": "Agent Up (AgentUp, agent up, agentupcli) is a CLI tool that automatically scaffolds AI coding agent configuration for modern development workflows.",
   "requestFramePermissions": []
 }

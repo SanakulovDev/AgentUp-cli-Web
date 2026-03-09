@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
 
+Host: agentup.uz
 Sitemap: https://agentup.uz/sitemap.xml
