@@ -24,6 +24,53 @@ import {
 } from 'lucide-react';
 import { cn } from './lib/utils';
 
+const LANGUAGE_STACK: Record<string, { versions: string[]; frameworks: string[] }> = {
+  TypeScript: {
+    versions: ['5.4', '5.3', '5.2', '5.0', '4.9'],
+    frameworks: ['Next.js', 'Nuxt', 'Remix', 'SvelteKit', 'Astro', 'NestJS', 'Express']
+  },
+  JavaScript: {
+    versions: ['ES2024', 'ES2023', 'ES2022'],
+    frameworks: ['Next.js', 'Nuxt', 'Express', 'Fastify', 'Remix']
+  },
+  Python: {
+    versions: ['3.12', '3.11', '3.10', '3.9'],
+    frameworks: ['FastAPI', 'Django', 'Flask', 'Starlette']
+  },
+  Go: {
+    versions: ['1.22', '1.21', '1.20'],
+    frameworks: ['Gin', 'Echo', 'Fiber', 'Chi']
+  },
+  Rust: {
+    versions: ['1.77', '1.76', '1.75'],
+    frameworks: ['Axum', 'Actix-web', 'Rocket', 'Warp']
+  },
+  Java: {
+    versions: ['21', '17', '11'],
+    frameworks: ['Spring Boot', 'Quarkus', 'Micronaut']
+  },
+  Kotlin: {
+    versions: ['2.0', '1.9', '1.8'],
+    frameworks: ['Spring Boot', 'Ktor']
+  },
+  PHP: {
+    versions: ['8.3', '8.2', '8.1'],
+    frameworks: ['Laravel', 'Symfony', 'Slim']
+  },
+  Ruby: {
+    versions: ['3.3', '3.2', '3.1'],
+    frameworks: ['Rails', 'Sinatra', 'Hanami']
+  },
+  'C#': {
+    versions: ['12', '11', '10'],
+    frameworks: ['ASP.NET Core', 'Blazor', 'Minimal API']
+  },
+  Swift: {
+    versions: ['5.10', '5.9'],
+    frameworks: ['Vapor', 'Hummingbird']
+  }
+};
+
 export const InteractivePreview = () => {
   const allProviders = ['Claude', 'Cursor', 'Codex', 'Gemini'] as const;
   const allRoles = ['Architect', 'Frontend', 'Backend', 'DevOps', 'Fullstack'] as const;
@@ -61,6 +108,16 @@ export const InteractivePreview = () => {
 
   const toggleFolder = (name: string) => {
     setExpandedFolders(prev => ({ ...prev, [name]: !prev[name] }));
+  };
+
+  const handleLanguageChange = (lang: string) => {
+    const stack = LANGUAGE_STACK[lang];
+    setConfig(prev => ({
+      ...prev,
+      language: lang,
+      version: stack.versions[0],
+      framework: stack.frameworks[0]
+    }));
   };
 
   const ideFolderMap: Record<string, { name: string; children: { name: string; type: 'file' }[] }> = {
@@ -327,7 +384,7 @@ Database: ${config.database} v${config.dbVersion}${config.docker ? '\nDocker: en
                   id="cfg-ide"
                   value={config.ide}
                   onChange={(e) => setConfig({...config, ide: e.target.value})}
-                  className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white focus:outline-none focus:border-cyan-500 transition-colors"
+                  className="w-full bg-[#0a0f1d] border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white focus:outline-none focus:border-cyan-500 transition-colors"
                 >
                   <option>Cursor</option>
                   <option>VS Code</option>
@@ -338,35 +395,44 @@ Database: ${config.database} v${config.dbVersion}${config.docker ? '\nDocker: en
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label htmlFor="cfg-lang" className="block text-xs font-medium text-slate-400 mb-2">LANGUAGE</label>
-                  <input
+                  <select
                     id="cfg-lang"
-                    type="text"
                     value={config.language}
-                    onChange={(e) => setConfig({...config, language: e.target.value})}
-                    className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white focus:outline-none focus:border-cyan-500 transition-colors"
-                  />
+                    onChange={(e) => handleLanguageChange(e.target.value)}
+                    className="w-full bg-[#0a0f1d] border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white focus:outline-none focus:border-cyan-500 transition-colors"
+                  >
+                    {Object.keys(LANGUAGE_STACK).map(lang => (
+                      <option key={lang} value={lang}>{lang}</option>
+                    ))}
+                  </select>
                 </div>
                 <div>
                   <label htmlFor="cfg-ver" className="block text-xs font-medium text-slate-400 mb-2">VERSION</label>
-                  <input
+                  <select
                     id="cfg-ver"
-                    type="text"
                     value={config.version}
                     onChange={(e) => setConfig({...config, version: e.target.value})}
-                    className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white focus:outline-none focus:border-cyan-500 transition-colors"
-                  />
+                    className="w-full bg-[#0a0f1d] border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white focus:outline-none focus:border-cyan-500 transition-colors"
+                  >
+                    {LANGUAGE_STACK[config.language]?.versions.map(v => (
+                      <option key={v} value={v}>{v}</option>
+                    ))}
+                  </select>
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label htmlFor="cfg-fw" className="block text-xs font-medium text-slate-400 mb-2">FRAMEWORK</label>
-                  <input
+                  <select
                     id="cfg-fw"
-                    type="text"
                     value={config.framework}
                     onChange={(e) => setConfig({...config, framework: e.target.value})}
-                    className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white focus:outline-none focus:border-cyan-500 transition-colors"
-                  />
+                    className="w-full bg-[#0a0f1d] border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white focus:outline-none focus:border-cyan-500 transition-colors"
+                  >
+                    {LANGUAGE_STACK[config.language]?.frameworks.map(fw => (
+                      <option key={fw} value={fw}>{fw}</option>
+                    ))}
+                  </select>
                 </div>
                 <div>
                   <label htmlFor="cfg-db" className="block text-xs font-medium text-slate-400 mb-2">DATABASE</label>
@@ -374,7 +440,7 @@ Database: ${config.database} v${config.dbVersion}${config.docker ? '\nDocker: en
                     id="cfg-db"
                     value={config.database}
                     onChange={(e) => setConfig({...config, database: e.target.value})}
-                    className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white focus:outline-none focus:border-cyan-500 transition-colors"
+                    className="w-full bg-[#0a0f1d] border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white focus:outline-none focus:border-cyan-500 transition-colors"
                   >
                     <option>PostgreSQL</option>
                     <option>MySQL</option>
