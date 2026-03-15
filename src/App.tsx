@@ -5,7 +5,9 @@ import {
   Github,
   ArrowRight,
   Copy,
-  Check
+  Check,
+  Sparkles,
+  Upload
 } from 'lucide-react';
 import { cn } from './lib/utils';
 
@@ -18,6 +20,7 @@ const LazyBelowFold = lazy(() => import('./BelowFold').then(m => ({
       <m.SupportedTools />
       <m.HowItWorks />
       <m.UseCases />
+      <AnalyzeCTA />
       <m.FAQ />
       <m.Footer />
     </>
@@ -41,7 +44,7 @@ const Navbar = () => (
           <a href="#demo" className="text-sm font-medium text-slate-400 hover:text-white transition-colors">Demo</a>
           <a href="#how-it-works" className="text-sm font-medium text-slate-400 hover:text-white transition-colors">Workflow</a>
           <a href="#faq" className="text-sm font-medium text-slate-400 hover:text-white transition-colors">FAQ</a>
-          <a href="/analyze" className="text-sm font-medium text-cyan-400 hover:text-cyan-300 transition-colors">Analyze</a>
+          <a href="/analyze" className="text-sm font-medium text-slate-400 hover:text-white transition-colors">Analyze</a>
         </div>
         <div className="flex items-center gap-4">
           <a href="https://github.com/SanakulovDev/agentup" target="_blank" rel="noopener noreferrer" aria-label="GitHub repository" className="text-slate-400 hover:text-white transition-colors">
@@ -160,6 +163,50 @@ const ProblemSection = () => (
               <span className="text-sm font-mono text-slate-400">{file.name}</span>
             </div>
           ))}
+        </div>
+      </div>
+    </div>
+  </section>
+);
+
+const AnalyzeCTA = () => (
+  <section className="py-24 bg-slate-900/30">
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-purple-500/10 via-transparent to-cyan-500/10 p-10 md:p-14">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-purple-500/10 blur-[100px] rounded-full -z-10" />
+        <div className="absolute bottom-0 left-0 w-64 h-64 bg-cyan-500/10 blur-[100px] rounded-full -z-10" />
+
+        <div className="flex flex-col md:flex-row items-center gap-10">
+          <div className="flex-1">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 text-xs font-medium text-purple-400 mb-4">
+              <Sparkles className="w-3 h-3" /> AI-Powered
+            </div>
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+              Already have a config file?
+            </h2>
+            <p className="text-slate-400 leading-relaxed mb-6">
+              Upload your CLAUDE.md, AGENTS.md, or .cursorrules file and get instant AI-powered suggestions to improve it. See what's missing, what can be better, and get an improved version in seconds.
+            </p>
+            <a
+              href="/analyze"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-500 to-cyan-500 text-white font-bold rounded-xl hover:opacity-90 transition-opacity"
+            >
+              <Upload className="w-5 h-5" /> Try It Now
+            </a>
+          </div>
+
+          <div className="hidden md:flex flex-col gap-3 w-56 shrink-0">
+            {[
+              { label: 'Quality Score', value: '85/100', color: 'text-emerald-400' },
+              { label: 'Suggestions', value: '6 found', color: 'text-amber-400' },
+              { label: 'Improved File', value: 'Ready', color: 'text-cyan-400' }
+            ].map(item => (
+              <div key={item.label} className="flex items-center justify-between p-3 rounded-xl bg-white/5 border border-white/10">
+                <span className="text-xs text-slate-400">{item.label}</span>
+                <span className={cn("text-sm font-bold", item.color)}>{item.value}</span>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>
