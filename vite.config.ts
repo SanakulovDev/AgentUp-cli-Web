@@ -9,6 +9,9 @@ export default defineConfig(({mode}) => {
     plugins: [react(), tailwindcss()],
     define: {
       'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY),
+      'process.env.GROQ_API_KEY': JSON.stringify(env.GROQ_API_KEY),
+      'process.env.GROQ_API_URL': JSON.stringify(env.GROQ_API_URL),
+      'process.env.GROQ_MODEL': JSON.stringify(env.GROQ_MODEL),
     },
     resolve: {
       alias: {
@@ -29,13 +32,6 @@ export default defineConfig(({mode}) => {
     },
     server: {
       hmr: process.env.DISABLE_HMR !== 'true',
-      proxy: {
-        '/api': {
-          target: 'https://us-central1-agentup-cli.cloudfunctions.net',
-          changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/api/, ''),
-        },
-      },
     },
   };
 });

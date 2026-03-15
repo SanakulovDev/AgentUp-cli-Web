@@ -214,19 +214,25 @@ export const InteractivePreview = () => {
   const abortRef = useRef<AbortController | null>(null);
 
   const fetchAIContent = useCallback(async (file: string, cfg: Config) => {
+    const apiUrl = process.env.GROQ_API_URL;
+    const apiKey = process.env.GROQ_API_KEY;
+    if (!apiUrl || !apiKey) return;
+
     if (abortRef.current) abortRef.current.abort();
     const controller = new AbortController();
     abortRef.current = controller;
 
-    const apiBase = import.meta.env.VITE_API_URL || '';
-
     setAiLoading(true);
     try {
-      const res = await fetch(`${apiBase}/api/generate`, {
+      const res = await fetch(apiUrl, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${apiKey}`
+        },
         signal: controller.signal,
         body: JSON.stringify({
+          model: process.env.GROQ_MODEL || 'llama-3.3-70b-versatile',
           messages: [
             {
               role: 'system',
@@ -245,13 +251,14 @@ AI Providers: ${cfg.providers.join(', ')}
 Agent Roles: ${cfg.roles.join(', ')}`
             }
           ],
+          temperature: 0.7,
           max_tokens: 4096
         })
       });
 
       if (!res.ok) throw new Error('API request failed');
       const data = await res.json();
-      setAiContent(prev => ({ ...prev, [file]: data.content || '' }));
+      setAiContent(prev => ({ ...prev, [file]: data.choices?.[0]?.message?.content || '' }));
     } catch (e: unknown) {
       if (e instanceof DOMException && e.name === 'AbortError') return;
     } finally {

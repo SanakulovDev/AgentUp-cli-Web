@@ -128,18 +128,25 @@ export default function AnalyzePage() {
   }, []);
 
   const analyzeFile = useCallback(async () => {
-    if (!fileContent) return;
-
-    const apiBase = import.meta.env.VITE_API_URL || '';
+    const apiUrl = process.env.GROQ_API_URL;
+    const apiKey = process.env.GROQ_API_KEY;
+    if (!fileContent || !apiUrl || !apiKey) return;
 
     setLoading(true);
     setError('');
 
     try {
-      const res = await fetch(`${apiBase}/api/analyze`, {
+      const res = await fetch(apiUrl, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${apiKey}`
+        },
         body: JSON.stringify({
+          model: process.env.GROQ_MODEL || 'llama-3.3-70b-versatile',
+          temperature: 0.5,
+          max_tokens: 16384,
+          response_format: { type: 'json_object' },
           messages: [
             {
               role: 'system',
@@ -178,15 +185,15 @@ Provide 3-8 actionable suggestions. Output ONLY valid JSON, no markdown code blo
               role: 'user',
               content: `Analyze this "${fileName}" file and provide improvement suggestions:\n\n${fileContent}`
             }
-          ],
-          max_tokens: 16384
+          ]
         })
       });
 
       if (!res.ok) throw new Error('API request failed');
 
       const data = await res.json();
-      const parsed = JSON.parse(data.content || '{}');
+      const content = data.choices?.[0]?.message?.content || '{}';
+      const parsed = JSON.parse(content);
 
       const result: AnalysisResult = {
         score: typeof parsed.score === 'number' ? parsed.score : 50,
