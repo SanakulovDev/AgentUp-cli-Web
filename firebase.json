@@ -1,4 +1,11 @@
 {
+  "functions": [
+    {
+      "source": "functions",
+      "codebase": "default",
+      "runtime": "nodejs22"
+    }
+  ],
   "hosting": {
     "public": "dist",
     "ignore": [
@@ -45,6 +52,14 @@
       }
     ],
     "rewrites": [
+      {
+        "source": "/api/generate",
+        "function": "generate"
+      },
+      {
+        "source": "/api/analyze",
+        "function": "analyze"
+      },
       {
         "source": "**",
         "destination": "/index.html"

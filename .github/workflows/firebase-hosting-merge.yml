@@ -14,6 +14,8 @@ jobs:
       - run: npm ci && npm run build
         env:
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          GROQ_API_URL: ${{ secrets.GROQ_API_URL }}
+          GROQ_MODEL:   ${{ secrets.GROQ_MODEL }}
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}

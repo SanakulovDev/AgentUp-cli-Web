@@ -128,21 +128,18 @@ export default function AnalyzePage() {
   }, []);
 
   const analyzeFile = useCallback(async () => {
-    const apiKey = process.env.GROQ_API_KEY;
-    if (!apiKey || !fileContent) return;
+    if (!fileContent) return;
+
+    const apiBase = import.meta.env.VITE_API_URL || '';
 
     setLoading(true);
     setError('');
 
     try {
-      const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+      const res = await fetch(`${apiBase}/api/analyze`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${apiKey}`
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          model: 'llama-3.3-70b-versatile',
           messages: [
             {
               role: 'system',
@@ -182,17 +179,14 @@ Provide 3-8 actionable suggestions. Output ONLY valid JSON, no markdown code blo
               content: `Analyze this "${fileName}" file and provide improvement suggestions:\n\n${fileContent}`
             }
           ],
-          temperature: 0.5,
-          max_tokens: 16384,
-          response_format: { type: 'json_object' }
+          max_tokens: 16384
         })
       });
 
       if (!res.ok) throw new Error('API request failed');
 
       const data = await res.json();
-      const content = data.choices?.[0]?.message?.content || '';
-      const parsed = JSON.parse(content);
+      const parsed = JSON.parse(data.content || '{}');
 
       const result: AnalysisResult = {
         score: typeof parsed.score === 'number' ? parsed.score : 50,

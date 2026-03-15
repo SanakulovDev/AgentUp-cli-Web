@@ -41,8 +41,8 @@ const LANGUAGE_STACK: Record<string, { versions: string[]; frameworks: string[] 
     frameworks: ['Spring Boot', 'Ktor']
   },
   PHP: {
-    versions: ['8.3', '8.2', '8.1'],
-    frameworks: ['Laravel', 'Symfony', 'Slim']
+    versions: ['8.4', '8.3', '8.2', '8.1', '8.0', '7.4'],
+    frameworks: ['Laravel', 'Symfony', 'Yii2', 'Slim', 'CodeIgniter', 'CakePHP']
   },
   Ruby: {
     versions: ['3.3', '3.2', '3.1'],
@@ -56,6 +56,17 @@ const LANGUAGE_STACK: Record<string, { versions: string[]; frameworks: string[] 
     versions: ['5.10', '5.9', '5.8'],
     frameworks: ['Vapor', 'Hummingbird']
   }
+};
+
+const DATABASE_VERSIONS: Record<string, string[]> = {
+  PostgreSQL: ['17', '16', '15', '14', '13', '12'],
+  MySQL: ['9.0', '8.4', '8.0', '5.7'],
+  SQLite: ['3.45', '3.44', '3.43', '3.42'],
+  MongoDB: ['8.0', '7.0', '6.0', '5.0'],
+  MariaDB: ['11.4', '11.2', '10.11', '10.6', '10.5'],
+  Redis: ['7.4', '7.2', '7.0', '6.2'],
+  'SQL Server': ['2022', '2019', '2017'],
+  Oracle: ['23c', '21c', '19c']
 };
 
 const ALL_PROVIDERS = ['Claude', 'Cursor', 'Codex', 'Gemini'] as const;
@@ -73,6 +84,80 @@ interface Config {
   dbVersion: string;
   providers: string[];
   roles: string[];
+}
+
+function getFilePrompt(file: string): string {
+  const prompts: Record<string, string> = {
+    'AGENTS.md': `Generate an AGENTS.md file. This file defines AI agent roles, responsibilities, and team conventions.
+Include ONLY:
+- Project name and brief description
+- Tech stack summary (language, framework, database)
+- Defined agent roles with their specific responsibilities
+- Development commands (install, dev, build, lint, test)
+- Code conventions and standards for the team
+Do NOT include generic filler text or obvious statements.`,
+
+    'CLAUDE.md': `Generate a CLAUDE.md file. This file provides instructions specifically for Claude Code (Anthropic's CLI agent).
+Include ONLY:
+- Project overview (1-2 sentences)
+- Available CLI commands with descriptions
+- Tech stack and architecture notes
+- Key file paths and directory structure hints
+- Code style rules specific to this stack
+- What to avoid or be careful about
+Do NOT repeat what's in AGENTS.md. Focus on Claude-specific guidance.`,
+
+    '.agentup.json': `Generate an .agentup.json config file. This is the source-of-truth configuration for Agent Up CLI.
+Output valid JSON with: name, description, stack (language, version, framework, database, docker), ide, providers, roles.
+Keep it minimal and machine-readable.`,
+
+    'settings.json': `Generate a .claude/settings.json file. This configures Claude Code permissions.
+Output valid JSON with:
+- permissions.allow: list of allowed tool patterns (e.g. "Bash(npm run *)", "Read", "Write", "Edit")
+- permissions.deny: list of denied patterns (e.g. "Bash(rm -rf *)")
+- model: the Claude model to use
+Keep it concise and security-focused.`,
+
+    'rules/project-core.md': `Generate a .claude/rules/project-core.md file. This defines core project rules for Claude Code.
+Include ONLY:
+- Language and framework version constraints
+- Key architectural patterns to follow
+- Import/export conventions
+- Component/module structure rules
+- Database query patterns
+Keep each rule actionable and specific. No generic advice.`,
+
+    'rules/verification.md': `Generate a .claude/rules/verification.md file. This defines verification steps Claude must run before completing tasks.
+Include ONLY:
+- Pre-commit checks (lint, type-check, build)
+- Testing requirements
+- Security checks if applicable
+- Docker health checks if Docker is enabled
+Keep it as a numbered checklist. Be specific to the stack.`,
+
+    'rules/00-project-core.mdc': `Generate a .cursor/rules/00-project-core.mdc file for Cursor IDE.
+Start with YAML frontmatter: description and globs (target file patterns).
+Then include:
+- Framework-specific coding patterns
+- Component structure rules
+- Naming conventions
+- Import ordering rules
+Keep rules actionable and specific to the stack. No generic filler.`,
+
+    'README.md': `Generate a .cursor/README.md file explaining the Cursor rules setup.
+Keep it brief: what the rules do, how to add new ones, and file naming conventions.`,
+
+    'extensions.json': `Generate a .vscode/extensions.json file with recommended VS Code extensions.
+Output valid JSON. Only include extensions directly relevant to the specified tech stack.`,
+
+    'workspace.xml': `Generate a .idea/workspace.xml file for JetBrains IDE.
+Output valid XML with project type and language level settings. Keep it minimal.`,
+
+    'misc.xml': `Generate a .idea/misc.xml file for JetBrains IDE.
+Output valid XML with JavaScript/TypeScript language level. Keep it minimal.`
+  };
+
+  return prompts[file] || `Generate the "${file}" configuration file. Output ONLY the file content, no explanations. Be concise and relevant to the project stack.`;
 }
 
 const IDE_FOLDER_MAP: Record<string, { name: string; children: { name: string; type: 'file' }[] }> = {
@@ -105,166 +190,6 @@ const IDE_FOLDER_MAP: Record<string, { name: string; children: { name: string; t
   }
 };
 
-function getFileContent(filename: string, config: Config): string {
-  const dbOrmMap: Record<string, string> = {
-    'PostgreSQL': 'Prisma / pg',
-    'MySQL': 'Prisma / mysql2',
-    'SQLite': 'better-sqlite3',
-    'MongoDB': 'Mongoose'
-  };
-  switch (filename) {
-    case 'AGENTS.md':
-      return `# ${config.projectName}
-
-## Description
-${config.description}
-
-## Tech Stack
-- Language: ${config.language} v${config.version}
-- Framework: ${config.framework}
-- Database: ${config.database} v${config.dbVersion}
-- ORM/Driver: ${dbOrmMap[config.database] || 'N/A'}${config.docker ? '\n- Container: Docker + docker-compose' : ''}
-
-## Development Commands
-- Install: npm install
-- Dev: npm run dev
-- Build: npm run build
-- Lint: npm run lint
-
-## AI Providers
-${config.providers.map(p => `- ${p}`).join('\n')}
-
-## Agent Roles
-${config.roles.map(r => `- ${r}`).join('\n')}
-
-## Conventions
-- Use ${config.language} strict mode
-- Follow ${config.framework} best practices
-- ${config.docker ? 'All services run in Docker containers' : 'Run services locally'}`;
-    case 'CLAUDE.md':
-      return `# CLAUDE.md
-
-This file provides guidance to Claude Code when working in this repository.
-
-## Project: ${config.projectName}
-${config.description}
-
-## Commands
-- \`npm run dev\` - Start dev server
-- \`npm run build\` - Production build
-- \`npm run lint\` - Type check
-
-## Stack
-- ${config.language} v${config.version} + ${config.framework}
-- ${config.database} v${config.dbVersion}
-- IDE: ${config.ide}${config.docker ? '\n- Docker enabled' : ''}
-
-## Architecture
-Refer to .claude/rules/ for detailed instructions.`;
-    case '.agentup.json':
-      return JSON.stringify({
-        name: config.projectName,
-        description: config.description,
-        stack: {
-          language: { name: config.language, version: config.version },
-          framework: config.framework,
-          database: { name: config.database, version: config.dbVersion },
-          docker: config.docker
-        },
-        ide: config.ide,
-        providers: config.providers,
-        roles: config.roles
-      }, null, 2);
-    case 'settings.json':
-      return JSON.stringify({
-        permissions: {
-          allow: ["Bash(npm run *)", "Read", "Write", "Edit", "Glob", "Grep"],
-          deny: ["Bash(rm -rf *)"]
-        },
-        model: "claude-sonnet-4-20250514"
-      }, null, 2);
-    case 'rules/project-core.md':
-      return `# Project Core Rules
-
-## ${config.projectName}
-- Language: ${config.language} v${config.version}
-- Framework: ${config.framework}
-- Database: ${config.database}
-${config.docker ? '- All services containerized via Docker\n- Use docker-compose for local dev' : ''}
-
-## Code Style
-- Use strict ${config.language} configuration
-- Prefer functional components and hooks
-- Follow ${config.framework} conventions`;
-    case 'rules/verification.md':
-      return `# Verification Rules
-
-Before completing any task:
-1. Run \`npm run lint\` to verify types
-2. Run \`npm run build\` to ensure no build errors
-3. Test affected functionality manually${config.docker ? '\n4. Verify Docker containers are healthy' : ''}`;
-    case 'rules/00-project-core.mdc':
-      return `---
-description: Core project rules for ${config.projectName}
-globs: ["**/*.${config.language === 'TypeScript' ? 'ts,tsx' : 'js,jsx'}"]
----
-
-# ${config.projectName}
-
-Stack: ${config.language} v${config.version} + ${config.framework}
-Database: ${config.database} v${config.dbVersion}${config.docker ? '\nDocker: enabled' : ''}
-
-## Guidelines
-- Follow ${config.framework} project structure
-- Use ${config.language} strict mode
-- Write clean, maintainable code`;
-    case 'extensions.json':
-      return JSON.stringify({
-        recommendations: [
-          "dbaeumer.vscode-eslint",
-          "esbenp.prettier-vscode",
-          ...(config.language === 'TypeScript' ? ["ms-vscode.vscode-typescript-next"] : []),
-          ...(config.docker ? ["ms-azuretools.vscode-docker"] : [])
-        ]
-      }, null, 2);
-    case 'workspace.xml':
-      return `<?xml version="1.0" encoding="UTF-8"?>
-<project version="4">
-  <component name="ProjectType">
-    <option name="id" value="Web" />
-  </component>
-  <!-- ${config.projectName} -->
-  <!-- ${config.language} v${config.version} + ${config.framework} -->
-</project>`;
-    case 'misc.xml':
-      return `<?xml version="1.0" encoding="UTF-8"?>
-<project version="4">
-  <component name="JavaScriptSettings">
-    <option name="languageLevel" value="${config.language === 'TypeScript' ? 'TypeScript' : 'ES6'}" />
-  </component>
-</project>`;
-    default:
-      if (filename === 'settings.json' && config.ide !== 'Cursor') {
-        const ideSettings: Record<string, object> = {
-          'VS Code': {
-            "editor.formatOnSave": true,
-            "editor.defaultFormatter": "esbenp.prettier-vscode",
-            "typescript.tsdk": "node_modules/typescript/lib",
-            ...(config.docker ? { "docker.defaultRegistryPath": "" } : {})
-          },
-          'Zed': {
-            "language_overrides": {
-              [config.language]: { "formatter": "prettier" }
-            },
-            "lsp": { "typescript-language-server": { "enabled": true } }
-          }
-        };
-        return JSON.stringify(ideSettings[config.ide] || {}, null, 2);
-      }
-      return `// Generated by Agent Up\n// Configuration for ${config.projectName}`;
-  }
-}
-
 export const InteractivePreview = () => {
   const [config, setConfig] = useState<Config>({
     projectName: 'My Awesome Project',
@@ -275,7 +200,7 @@ export const InteractivePreview = () => {
     framework: 'Next.js',
     docker: true,
     database: 'PostgreSQL',
-    dbVersion: '16',
+    dbVersion: '17',
     providers: ['Claude', 'Cursor', 'Gemini'],
     roles: ['Architect', 'Frontend', 'Backend']
   });
@@ -289,52 +214,44 @@ export const InteractivePreview = () => {
   const abortRef = useRef<AbortController | null>(null);
 
   const fetchAIContent = useCallback(async (file: string, cfg: Config) => {
-    const apiKey = process.env.GROQ_API_KEY;
-    if (!apiKey) return;
-
     if (abortRef.current) abortRef.current.abort();
     const controller = new AbortController();
     abortRef.current = controller;
 
+    const apiBase = import.meta.env.VITE_API_URL || '';
+
     setAiLoading(true);
     try {
-      const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+      const res = await fetch(`${apiBase}/api/generate`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${apiKey}`
-        },
+        headers: { 'Content-Type': 'application/json' },
         signal: controller.signal,
         body: JSON.stringify({
-          model: 'llama-3.3-70b-versatile',
           messages: [
             {
               role: 'system',
-              content: `You are an expert at generating AI coding agent configuration files. Generate the content for a "${file}" file based on the project configuration provided. Output ONLY the file content, no explanations or markdown code blocks. Make it professional, detailed, and production-ready.`
+              content: getFilePrompt(file)
             },
             {
               role: 'user',
-              content: `Generate the "${file}" file for this project:
-- Project: ${cfg.projectName}
-- Description: ${cfg.description}
-- Language: ${cfg.language} v${cfg.version}
-- Framework: ${cfg.framework}
-- Database: ${cfg.database} v${cfg.dbVersion}
-- Docker: ${cfg.docker ? 'enabled' : 'disabled'}
-- IDE: ${cfg.ide}
-- AI Providers: ${cfg.providers.join(', ')}
-- Agent Roles: ${cfg.roles.join(', ')}`
+              content: `Project: ${cfg.projectName}
+Description: ${cfg.description}
+Language: ${cfg.language} v${cfg.version}
+Framework: ${cfg.framework}
+Database: ${cfg.database} v${cfg.dbVersion}
+Docker: ${cfg.docker ? 'enabled' : 'disabled'}
+IDE: ${cfg.ide}
+AI Providers: ${cfg.providers.join(', ')}
+Agent Roles: ${cfg.roles.join(', ')}`
             }
           ],
-          temperature: 0.7,
-          max_tokens: 2048
+          max_tokens: 4096
         })
       });
 
       if (!res.ok) throw new Error('API request failed');
       const data = await res.json();
-      const content = data.choices?.[0]?.message?.content || '';
-      setAiContent(prev => ({ ...prev, [file]: content }));
+      setAiContent(prev => ({ ...prev, [file]: data.content || '' }));
     } catch (e: unknown) {
       if (e instanceof DOMException && e.name === 'AbortError') return;
     } finally {
@@ -342,8 +259,12 @@ export const InteractivePreview = () => {
     }
   }, []);
 
+  // Skip auto-generation on first render; only generate when config changes
   useEffect(() => {
-    if (!process.env.GROQ_API_KEY) return;
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
 
     setAiContent(prev => {
       const { [selectedFile]: _, ...rest } = prev;
@@ -352,12 +273,9 @@ export const InteractivePreview = () => {
 
     if (debounceRef.current) clearTimeout(debounceRef.current);
 
-    const delay = isFirstRender.current ? 0 : 800;
-    isFirstRender.current = false;
-
     debounceRef.current = setTimeout(() => {
       fetchAIContent(selectedFile, config);
-    }, delay);
+    }, 800);
 
     return () => {
       if (debounceRef.current) clearTimeout(debounceRef.current);
@@ -390,6 +308,15 @@ export const InteractivePreview = () => {
       language: lang,
       version: stack.versions[0],
       framework: stack.frameworks[0]
+    }));
+  };
+
+  const handleDatabaseChange = (db: string) => {
+    const versions = DATABASE_VERSIONS[db];
+    setConfig(prev => ({
+      ...prev,
+      database: db,
+      dbVersion: versions[0]
     }));
   };
 
@@ -530,15 +457,27 @@ export const InteractivePreview = () => {
                   <select
                     id="cfg-db"
                     value={config.database}
-                    onChange={(e) => setConfig(prev => ({ ...prev, database: e.target.value }))}
+                    onChange={(e) => handleDatabaseChange(e.target.value)}
                     className="w-full bg-[#0a0f1d] border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white focus:outline-none focus:border-cyan-500 transition-colors"
                   >
-                    <option>PostgreSQL</option>
-                    <option>MySQL</option>
-                    <option>SQLite</option>
-                    <option>MongoDB</option>
+                    {Object.keys(DATABASE_VERSIONS).map(db => (
+                      <option key={db} value={db}>{db}</option>
+                    ))}
                   </select>
                 </div>
+              </div>
+              <div>
+                <label htmlFor="cfg-dbver" className="block text-xs font-medium text-slate-400 mb-2">DB VERSION</label>
+                <select
+                  id="cfg-dbver"
+                  value={config.dbVersion}
+                  onChange={(e) => setConfig(prev => ({ ...prev, dbVersion: e.target.value }))}
+                  className="w-full bg-[#0a0f1d] border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white focus:outline-none focus:border-cyan-500 transition-colors"
+                >
+                  {DATABASE_VERSIONS[config.database]?.map(v => (
+                    <option key={v} value={v}>{v}</option>
+                  ))}
+                </select>
               </div>
 
               <div className="flex items-center justify-between p-3.5 bg-white/5 rounded-xl border border-white/10">
@@ -715,9 +654,22 @@ export const InteractivePreview = () => {
                       exit={{ opacity: 0, y: -8 }}
                       transition={{ duration: 0.2 }}
                     >
-                      <pre className="text-slate-300 whitespace-pre-wrap leading-relaxed">
-                        {aiContent[selectedFile] || getFileContent(selectedFile, config)}
-                      </pre>
+                      {aiContent[selectedFile] ? (
+                        <pre className="text-slate-300 whitespace-pre-wrap leading-relaxed">
+                          {aiContent[selectedFile]}
+                        </pre>
+                      ) : aiLoading ? (
+                        <div className="flex flex-col items-center justify-center py-20">
+                          <Loader2 className="w-6 h-6 text-cyan-400 animate-spin mb-3" />
+                          <p className="text-sm text-slate-400">Generating content...</p>
+                        </div>
+                      ) : (
+                        <div className="flex flex-col items-center justify-center py-20 text-center">
+                          <Sparkles className="w-8 h-8 text-slate-600 mb-3" />
+                          <p className="text-sm text-slate-500 mb-1">No content yet</p>
+                          <p className="text-xs text-slate-600">Change any config option to auto-generate</p>
+                        </div>
+                      )}
                     </motion.div>
                   </AnimatePresence>
                 </div>
