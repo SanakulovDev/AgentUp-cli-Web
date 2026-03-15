@@ -164,6 +164,12 @@ Analyze the provided file and return a JSON response with this exact structure:
   "improvedContent": "<the full improved version of the file>"
 }
 
+CRITICAL rules for "improvedContent":
+- It must contain the COMPLETE improved version of the file, not a summary or partial content
+- Use actual newline characters in the JSON string (\\n), not literal backslash-n
+- Preserve the original markdown formatting (headings, lists, code blocks)
+- Apply all your suggestions to produce the improved version
+
 Types:
 - "improvement": something that exists but can be made better
 - "warning": potential issues or anti-patterns
@@ -177,7 +183,7 @@ Provide 3-8 actionable suggestions. Output ONLY valid JSON, no markdown code blo
             }
           ],
           temperature: 0.5,
-          max_tokens: 4096,
+          max_tokens: 8192,
           response_format: { type: 'json_object' }
         })
       });
@@ -186,10 +192,21 @@ Provide 3-8 actionable suggestions. Output ONLY valid JSON, no markdown code blo
 
       const data = await res.json();
       const content = data.choices?.[0]?.message?.content || '';
-      const parsed = JSON.parse(content) as AnalysisResult;
-      setAnalysis(parsed);
+      const parsed = JSON.parse(content);
+
+      const result: AnalysisResult = {
+        score: typeof parsed.score === 'number' ? parsed.score : 50,
+        summary: parsed.summary || 'Analysis complete.',
+        suggestions: Array.isArray(parsed.suggestions) ? parsed.suggestions : [],
+        improvedContent: typeof parsed.improvedContent === 'string'
+          ? parsed.improvedContent
+          : fileContent
+      };
+
+      setAnalysis(result);
       setActiveTab('suggestions');
-    } catch {
+    } catch (e) {
+      console.error('Analysis error:', e);
       setError('Analysis failed. Please try again.');
     } finally {
       setLoading(false);
