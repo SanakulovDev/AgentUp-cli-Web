@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   Layout,
@@ -20,7 +20,8 @@ import {
   Globe,
   Cpu,
   Shield,
-  Rocket
+  Rocket,
+  Loader2
 } from 'lucide-react';
 import { cn } from './lib/utils';
 
@@ -91,6 +92,57 @@ export const InteractivePreview = () => {
 
   const [selectedFile, setSelectedFile] = useState('AGENTS.md');
   const [expandedFolders, setExpandedFolders] = useState<Record<string, boolean>>({ '.claude': true, '.cursor': true });
+  const [aiContent, setAiContent] = useState<Record<string, string>>({});
+  const [aiLoading, setAiLoading] = useState(false);
+
+  const generateWithAI = useCallback(async () => {
+    const apiKey = process.env.GROQ_API_KEY;
+    if (!apiKey) return;
+
+    setAiLoading(true);
+    try {
+      const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${apiKey}`
+        },
+        body: JSON.stringify({
+          model: 'llama-3.3-70b-versatile',
+          messages: [
+            {
+              role: 'system',
+              content: `You are an expert at generating AI coding agent configuration files. Generate the content for a "${selectedFile}" file based on the project configuration provided. Output ONLY the file content, no explanations or markdown code blocks. Make it professional, detailed, and production-ready.`
+            },
+            {
+              role: 'user',
+              content: `Generate the "${selectedFile}" file for this project:
+- Project: ${config.projectName}
+- Description: ${config.description}
+- Language: ${config.language} v${config.version}
+- Framework: ${config.framework}
+- Database: ${config.database} v${config.dbVersion}
+- Docker: ${config.docker ? 'enabled' : 'disabled'}
+- IDE: ${config.ide}
+- AI Providers: ${config.providers.join(', ')}
+- Agent Roles: ${config.roles.join(', ')}`
+            }
+          ],
+          temperature: 0.7,
+          max_tokens: 2048
+        })
+      });
+
+      if (!res.ok) throw new Error('API request failed');
+      const data = await res.json();
+      const content = data.choices?.[0]?.message?.content || '';
+      setAiContent(prev => ({ ...prev, [selectedFile]: content }));
+    } catch {
+      // silently fail, user can retry
+    } finally {
+      setAiLoading(false);
+    }
+  }, [selectedFile, config]);
 
   const toggleProvider = (p: string) => {
     setConfig(prev => ({
@@ -593,9 +645,26 @@ Database: ${config.database} v${config.dbVersion}${config.docker ? '\nDocker: en
 
               {/* Code Preview */}
               <div className="flex-1 bg-black/40 overflow-y-auto">
-                <div className="flex items-center gap-2 px-6 py-2 border-b border-white/10 bg-white/[0.02]">
-                  <FileCode className="w-3.5 h-3.5 text-slate-400" />
-                  <span className="text-xs font-mono text-slate-400">{selectedFile}</span>
+                <div className="flex items-center justify-between px-6 py-2 border-b border-white/10 bg-white/[0.02]">
+                  <div className="flex items-center gap-2">
+                    <FileCode className="w-3.5 h-3.5 text-slate-400" />
+                    <span className="text-xs font-mono text-slate-400">{selectedFile}</span>
+                    {aiContent[selectedFile] && (
+                      <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-purple-500/10 text-purple-400 border border-purple-500/20">AI</span>
+                    )}
+                  </div>
+                  <button
+                    onClick={generateWithAI}
+                    disabled={aiLoading}
+                    className="flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-medium bg-gradient-to-r from-purple-500/20 to-cyan-500/20 border border-purple-500/30 text-purple-300 hover:from-purple-500/30 hover:to-cyan-500/30 transition-all disabled:opacity-50"
+                  >
+                    {aiLoading ? (
+                      <Loader2 className="w-3 h-3 animate-spin" />
+                    ) : (
+                      <Sparkles className="w-3 h-3" />
+                    )}
+                    {aiLoading ? 'Generating...' : 'Generate with AI'}
+                  </button>
                 </div>
                 <div className="p-6 font-mono text-sm">
                   <AnimatePresence mode="wait">
@@ -607,7 +676,7 @@ Database: ${config.database} v${config.dbVersion}${config.docker ? '\nDocker: en
                       transition={{ duration: 0.2 }}
                     >
                       <pre className="text-slate-300 whitespace-pre-wrap leading-relaxed">
-                        {getFileContent(selectedFile)}
+                        {aiContent[selectedFile] || getFileContent(selectedFile)}
                       </pre>
                     </motion.div>
                   </AnimatePresence>
