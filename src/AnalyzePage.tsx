@@ -183,7 +183,7 @@ Provide 3-8 actionable suggestions. Output ONLY valid JSON, no markdown code blo
             }
           ],
           temperature: 0.5,
-          max_tokens: 8192,
+          max_tokens: 16384,
           response_format: { type: 'json_object' }
         })
       });
