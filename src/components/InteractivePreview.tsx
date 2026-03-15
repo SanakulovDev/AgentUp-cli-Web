@@ -213,34 +213,15 @@ export const InteractivePreview = () => {
   const isFirstRender = useRef(true);
   const abortRef = useRef<AbortController | null>(null);
 
-  const fetchAIContent = useCallback(async (file: string, cfg: Config) => {
-    const apiUrl = process.env.GROQ_API_URL;
-    const apiKey = process.env.GROQ_API_KEY;
-    if (!apiUrl || !apiKey) return;
-
+  const fetchAllFiles = useCallback(async (files: string[], cfg: Config) => {
     if (abortRef.current) abortRef.current.abort();
     const controller = new AbortController();
     abortRef.current = controller;
 
     setAiLoading(true);
-    try {
-      const res = await fetch(apiUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${apiKey}`
-        },
-        signal: controller.signal,
-        body: JSON.stringify({
-          model: process.env.GROQ_MODEL || 'llama-3.3-70b-versatile',
-          messages: [
-            {
-              role: 'system',
-              content: getFilePrompt(file)
-            },
-            {
-              role: 'user',
-              content: `Project: ${cfg.projectName}
+    setAiContent({});
+
+    const userContext = `Project: ${cfg.projectName}
 Description: ${cfg.description}
 Language: ${cfg.language} v${cfg.version}
 Framework: ${cfg.framework}
@@ -248,47 +229,46 @@ Database: ${cfg.database} v${cfg.dbVersion}
 Docker: ${cfg.docker ? 'enabled' : 'disabled'}
 IDE: ${cfg.ide}
 AI Providers: ${cfg.providers.join(', ')}
-Agent Roles: ${cfg.roles.join(', ')}`
-            }
-          ],
-          temperature: 0.7,
-          max_tokens: 4096
-        })
-      });
+Agent Roles: ${cfg.roles.join(', ')}`;
 
-      if (!res.ok) throw new Error('API request failed');
-      const data = await res.json();
-      setAiContent(prev => ({ ...prev, [file]: data.choices?.[0]?.message?.content || '' }));
+    try {
+      const results = await Promise.allSettled(
+        files.map(async (file) => {
+          const res = await fetch('/api/generate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            signal: controller.signal,
+            body: JSON.stringify({
+              messages: [
+                { role: 'system', content: getFilePrompt(file) },
+                { role: 'user', content: userContext }
+              ],
+              temperature: 0.7,
+              max_tokens: 4096
+            })
+          });
+          if (!res.ok) throw new Error('API request failed');
+          const data = await res.json();
+          return { file, content: data.content || '' };
+        })
+      );
+
+      if (controller.signal.aborted) return;
+
+      const newContent: Record<string, string> = {};
+      for (const result of results) {
+        if (result.status === 'fulfilled') {
+          newContent[result.value.file] = result.value.content;
+        }
+      }
+      setAiContent(newContent);
     } catch (e: unknown) {
       if (e instanceof DOMException && e.name === 'AbortError') return;
     } finally {
-      setAiLoading(false);
+      if (!controller.signal.aborted) setAiLoading(false);
     }
   }, []);
 
-  // Skip auto-generation on first render; only generate when config changes
-  useEffect(() => {
-    if (isFirstRender.current) {
-      isFirstRender.current = false;
-      return;
-    }
-
-    setAiContent(prev => {
-      const { [selectedFile]: _, ...rest } = prev;
-      return rest;
-    });
-
-    if (debounceRef.current) clearTimeout(debounceRef.current);
-
-    debounceRef.current = setTimeout(() => {
-      fetchAIContent(selectedFile, config);
-    }, 800);
-
-    return () => {
-      if (debounceRef.current) clearTimeout(debounceRef.current);
-      abortRef.current?.abort();
-    };
-  }, [selectedFile, config, fetchAIContent]);
 
   const toggleProvider = (p: string) => {
     setConfig(prev => ({
@@ -353,6 +333,26 @@ Agent Roles: ${cfg.roles.join(', ')}`
     fileTree.flatMap(item =>
       item.type === 'folder' ? (item.children?.map(c => c.name) || []) : [item.name]
     ), [fileTree]);
+
+  // Generate all files when config changes (skip first render)
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+
+    debounceRef.current = setTimeout(() => {
+      fetchAllFiles(allFileNames, config);
+    }, 800);
+
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+      abortRef.current?.abort();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [config, allFileNames, fetchAllFiles]);
 
   useEffect(() => {
     if (!allFileNames.includes(selectedFile)) {
@@ -639,7 +639,7 @@ Agent Roles: ${cfg.roles.join(', ')}`
                     )}
                   </div>
                   <button
-                    onClick={() => fetchAIContent(selectedFile, config)}
+                    onClick={() => fetchAllFiles(allFileNames, config)}
                     disabled={aiLoading}
                     aria-label="Generate file content with AI"
                     className="flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-medium bg-gradient-to-r from-purple-500/20 to-cyan-500/20 border border-purple-500/30 text-purple-300 hover:from-purple-500/30 hover:to-cyan-500/30 transition-all disabled:opacity-50"

@@ -83,9 +83,11 @@ Copy `.env.example` to `.env.local` and fill in the values:
 cp .env.example .env.local
 ```
 
-| Variable         | Description                     |
-| ---------------- | ------------------------------- |
-| `GEMINI_API_KEY` | Gemini API key (optional for landing page) |
+| Variable       | Description                              |
+| -------------- | ---------------------------------------- |
+| `GROQ_API_KEY` | Groq API key for AI generation           |
+| `GROQ_API_URL` | Groq API endpoint URL                    |
+| `GROQ_MODEL`   | Model name (e.g. `llama-3.3-70b-versatile`) |
 
 ## Support
 

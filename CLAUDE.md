@@ -38,4 +38,5 @@ This is a single-page landing site. All UI lives in `src/App.tsx` as colocated c
 
 ## Environment
 
-- `GEMINI_API_KEY` — injected via Vite's `define` (from `.env.local`); currently referenced in config but not actively used by the landing page
+- `GROQ_API_KEY`, `GROQ_API_URL`, `GROQ_MODEL` — used by the Express proxy server (`server/index.ts`), read from `.env`
+- The frontend never accesses API keys directly; all AI calls go through `/api/generate` and `/api/analyze` proxied to `localhost:3001`
