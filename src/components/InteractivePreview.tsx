@@ -334,18 +334,15 @@ Agent Roles: ${cfg.roles.join(', ')}`;
       item.type === 'folder' ? (item.children?.map(c => c.name) || []) : [item.name]
     ), [fileTree]);
 
-  // Generate all files when config changes (skip first render)
+  // Generate all files on mount and when config changes
   useEffect(() => {
-    if (isFirstRender.current) {
-      isFirstRender.current = false;
-      return;
-    }
-
     if (debounceRef.current) clearTimeout(debounceRef.current);
 
     debounceRef.current = setTimeout(() => {
       fetchAllFiles(allFileNames, config);
-    }, 800);
+    }, isFirstRender.current ? 0 : 800);
+
+    if (isFirstRender.current) isFirstRender.current = false;
 
     return () => {
       if (debounceRef.current) clearTimeout(debounceRef.current);
