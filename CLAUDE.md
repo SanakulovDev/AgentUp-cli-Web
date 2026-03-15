@@ -28,9 +28,9 @@ This is a single-page landing site. All UI lives in `src/App.tsx` as colocated c
 
 ## Deployment
 
-- Hosted on **Firebase Hosting** (config in `firebase.json`, `.firebaserc`)
-- CI via GitHub Actions: `.github/workflows/firebase-hosting-merge.yml` (deploy on merge to main) and `firebase-hosting-pull-request.yml` (preview on PR)
-- SPA rewrite rule: all routes serve `index.html`
+- Hosted on **Vercel** (config in `vercel.json`)
+- Serverless API functions in `api/` directory (generate.ts, analyze.ts) proxy Groq API calls
+- SPA rewrite rule: all non-API routes serve `index.html`
 
 ## Path Aliases
 
@@ -38,4 +38,4 @@ This is a single-page landing site. All UI lives in `src/App.tsx` as colocated c
 
 ## Environment
 
-- `GROQ_API_KEY`, `GROQ_API_URL`, `GROQ_MODEL` — injected via Vite's `define` from `.env`, used for AI generation in InteractivePreview and AnalyzePage
+- `GROQ_API_KEY`, `GROQ_API_URL`, `GROQ_MODEL` — set in Vercel Environment Variables, used by serverless functions in `api/`. Never exposed to the frontend.
