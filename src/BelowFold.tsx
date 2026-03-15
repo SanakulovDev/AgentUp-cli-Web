@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   Layout,
@@ -142,6 +142,25 @@ export const InteractivePreview = () => {
     } finally {
       setAiLoading(false);
     }
+  }, [selectedFile, config]);
+
+  // Auto-generate with debounce when config or selectedFile changes
+  const debounceRef = useRef<ReturnType<typeof setTimeout>>(null);
+  useEffect(() => {
+    if (!process.env.GROQ_API_KEY) return;
+    // Clear any existing AI content for this file so it regenerates
+    setAiContent(prev => {
+      const next = { ...prev };
+      delete next[selectedFile];
+      return next;
+    });
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => {
+      generateWithAI();
+    }, 800);
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+    };
   }, [selectedFile, config]);
 
   const toggleProvider = (p: string) => {

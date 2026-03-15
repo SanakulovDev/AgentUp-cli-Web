@@ -41,6 +41,7 @@ const Navbar = () => (
           <a href="#demo" className="text-sm font-medium text-slate-400 hover:text-white transition-colors">Demo</a>
           <a href="#how-it-works" className="text-sm font-medium text-slate-400 hover:text-white transition-colors">Workflow</a>
           <a href="#faq" className="text-sm font-medium text-slate-400 hover:text-white transition-colors">FAQ</a>
+          <a href="/analyze" className="text-sm font-medium text-cyan-400 hover:text-cyan-300 transition-colors">Analyze</a>
         </div>
         <div className="flex items-center gap-4">
           <a href="https://github.com/SanakulovDev/agentup" target="_blank" rel="noopener noreferrer" aria-label="GitHub repository" className="text-slate-400 hover:text-white transition-colors">
