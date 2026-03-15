@@ -38,5 +38,4 @@ This is a single-page landing site. All UI lives in `src/App.tsx` as colocated c
 
 ## Environment
 
-- `GROQ_API_KEY`, `GROQ_API_URL`, `GROQ_MODEL` — used by the Express proxy server (`server/index.ts`), read from `.env`
-- The frontend never accesses API keys directly; all AI calls go through `/api/generate` and `/api/analyze` proxied to `localhost:3001`
+- `GROQ_API_KEY`, `GROQ_API_URL`, `GROQ_MODEL` — injected via Vite's `define` from `.env`, used for AI generation in InteractivePreview and AnalyzePage

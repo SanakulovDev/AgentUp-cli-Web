@@ -214,6 +214,10 @@ export const InteractivePreview = () => {
   const abortRef = useRef<AbortController | null>(null);
 
   const fetchAllFiles = useCallback(async (files: string[], cfg: Config) => {
+    const apiUrl = process.env.GROQ_API_URL;
+    const apiKey = process.env.GROQ_API_KEY;
+    if (!apiUrl || !apiKey) return;
+
     if (abortRef.current) abortRef.current.abort();
     const controller = new AbortController();
     abortRef.current = controller;
@@ -234,11 +238,15 @@ Agent Roles: ${cfg.roles.join(', ')}`;
     try {
       const results = await Promise.allSettled(
         files.map(async (file) => {
-          const res = await fetch('/api/generate', {
+          const res = await fetch(apiUrl, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${apiKey}`
+            },
             signal: controller.signal,
             body: JSON.stringify({
+              model: process.env.GROQ_MODEL || 'llama-3.3-70b-versatile',
               messages: [
                 { role: 'system', content: getFilePrompt(file) },
                 { role: 'user', content: userContext }
@@ -249,7 +257,7 @@ Agent Roles: ${cfg.roles.join(', ')}`;
           });
           if (!res.ok) throw new Error('API request failed');
           const data = await res.json();
-          return { file, content: data.content || '' };
+          return { file, content: data.choices?.[0]?.message?.content || '' };
         })
       );
 
